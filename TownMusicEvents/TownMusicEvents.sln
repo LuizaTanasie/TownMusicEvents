@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "TownMusicEven
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{C9F4D914-F6FB-4E39-A94C-1583244C48FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{6EE28C02-A335-458C-A6AA-A80A12E43D53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C9F4D914-F6FB-4E39-A94C-1583244C48FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9F4D914-F6FB-4E39-A94C-1583244C48FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9F4D914-F6FB-4E39-A94C-1583244C48FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE28C02-A335-458C-A6AA-A80A12E43D53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE28C02-A335-458C-A6AA-A80A12E43D53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE28C02-A335-458C-A6AA-A80A12E43D53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE28C02-A335-458C-A6AA-A80A12E43D53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
