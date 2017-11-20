@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Artist.cs" />
     <Compile Include="Concert.cs" />
+    <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Fan.cs" />
     <Compile Include="Genre.cs" />
     <Compile Include="Idable.cs" />

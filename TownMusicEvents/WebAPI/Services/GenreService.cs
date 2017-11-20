@@ -10,15 +10,15 @@ namespace WebAPI.Services
 {
     public class GenreService
     {
-        public List<GenreModel> GetAllCategories()
+        public List<GenreModelForSelector> GetAllCategories()
         {
-            var genreModels = new List<GenreModel>();
+            var genreModels = new List<GenreModelForSelector>();
             using (var unitOfWork = new UnitOfWork())
             {
                 var genreRepository = unitOfWork.GetRepository<Genre>();
                 foreach (var genre in genreRepository.GetAll())
                 {
-                    genreModels.Add(new GenreModel { Id = genre.Id, Name = genre.Name });
+                    genreModels.Add(new GenreModelForSelector { id = genre.Id, value = genre.Name, label = genre.Name });
                 }
                 return genreModels;
             }
