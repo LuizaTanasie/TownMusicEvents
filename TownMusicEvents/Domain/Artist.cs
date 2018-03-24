@@ -37,6 +37,12 @@ namespace Domain
             Concerts = new HashSet<Concert>();
             NewsItems = new HashSet<NewsItem>();
         }
+
+        public override bool Equals(object obj)
+        {
+            Artist artist = (Artist)obj;
+            return artist.ArtistId == this.ArtistId;
+        }
     }
 
 

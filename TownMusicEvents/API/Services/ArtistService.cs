@@ -57,5 +57,75 @@ namespace API.Services
 
             }
         }
+
+        public ArtistModel UpdateArtist(ArtistModel updatedArtist)
+        {
+
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var artistRepository = unitOfWork.GetRepository<Artist>();
+                var userRepository = unitOfWork.GetRepository<User>();
+                var artist = artistRepository.Find(updatedArtist.ArtistId);
+                var user = userRepository.Find(updatedArtist.ArtistId);
+                if (artist == null || user == null) 
+                {
+                    return null;
+                }
+                if (updatedArtist.Biography != "")
+                {
+                    artist.Biography = updatedArtist.Biography;
+                }
+                if (updatedArtist.Facebook != "")
+                {
+                    artist.Facebook = updatedArtist.Facebook;
+                }
+                if (updatedArtist.Instagram != "")
+                {
+                    artist.Instagram = updatedArtist.Instagram;
+                }
+                if (updatedArtist.Name != "")
+                {
+                    user.Name = updatedArtist.Name;
+                }
+                if (updatedArtist.Picture1Url != "")
+                {
+                    artist.Picture1Url = updatedArtist.Picture1Url;
+                }
+                if (updatedArtist.Picture2Url != "")
+                {
+                    artist.Picture2Url = updatedArtist.Picture2Url;
+                }
+                if (updatedArtist.Picture3Url != "")
+                {
+                    artist.Picture3Url = updatedArtist.Picture3Url;
+                }
+                if (updatedArtist.Picture4Url != "")
+                {
+                    artist.Picture4Url = updatedArtist.Picture4Url;
+                }
+                if (updatedArtist.Picture5Url != "")
+                {
+                    artist.Picture5Url = updatedArtist.Picture5Url;
+                }
+                if (updatedArtist.Twitter != "")
+                {
+                    artist.Twitter = updatedArtist.Twitter;
+                }
+                if (updatedArtist.Website != "")
+                {
+                    artist.Website = updatedArtist.Website;
+                }
+                if (updatedArtist.YouTube != "")
+                {
+                    artist.YouTube = updatedArtist.YouTube;
+                }
+                userRepository.Update(user);
+                artistRepository.Update(artist);
+                unitOfWork.Save();
+
+                return updatedArtist;
+            }
+        }
+
     }
 }
