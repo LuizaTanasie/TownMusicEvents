@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Enums
+namespace API.Validation
 {
-    public enum RolesEnum
+    public interface IValidator<T>
     {
-        FAN,
-        ARTIST,
-        LASTFMARTIST
-    };
+        List<string> Check(T entity);
+    }
 }

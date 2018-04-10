@@ -1,4 +1,7 @@
-﻿using API.Services;
+﻿using API.Models;
+using API.Services;
+using API.Validation;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,5 +58,39 @@ namespace API.Controllers
                 return NotFound();
             return Ok(artist);
         }
+
+        public IHttpActionResult Put([FromBody]ArtistModel artistModel)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyTokenAndRole(token,(int)RolesEnum.ARTIST))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new ArtistService();
+            try
+            {
+                var artist = service.UpdateArtist(artistModel);
+                return Ok(artist);
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (InvalidModelException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
     }
 }

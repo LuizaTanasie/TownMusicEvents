@@ -14,12 +14,10 @@ namespace Domain
         public string About { get; set; }
         public string PhotoUrl { get; set; }
         public virtual User User { get; set; }
-        public virtual ICollection<Artist> Artists { get; set; }
-        public virtual ICollection<Concert> Concerts { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; }
         public Fan()
         {
-            Concerts = new HashSet<Concert>();
-            Artists = new HashSet<Artist>();
+            Ratings = new HashSet<Rating>();
         }
 
     }

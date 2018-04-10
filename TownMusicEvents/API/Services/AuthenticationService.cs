@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace WebAPI.Services
         {
             using (var unitOfWork = new UnitOfWork())
             {
-                var genreRepository = unitOfWork.GetRepository<User>();
-                User foundUser = genreRepository.GetAll().Where(user => user.Email == email && user.Password == password).FirstOrDefault();
+                var userRepository = unitOfWork.GetRepository<User>();
+                User foundUser = userRepository.GetAll().Where(user => user.Email == email && user.Password == password && user.Role!=(int)RolesEnum.LASTFMARTIST).FirstOrDefault();
                 return foundUser;
             }
         }

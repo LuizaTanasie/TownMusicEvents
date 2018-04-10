@@ -197,11 +197,14 @@
     <Compile Include="Controllers\GenreController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\SignUpController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ArtistLastFmModel.cs" />
     <Compile Include="Models\ArtistModel.cs" />
     <Compile Include="Models\GenreModelForSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -210,6 +213,11 @@
     <Compile Include="Services\ArtistService.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\GenreService.cs" />
+    <Compile Include="Services\SignUpService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Validation\InvalidModelException.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\NotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

@@ -54,7 +54,46 @@ namespace WebAPI.Security
 
             try
             {
-                Jose.JWT.Decode(token, key, JwsAlgorithm.HS256);
+                var decodeValue = Jose.JWT.Decode(token, key, JwsAlgorithm.HS256);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public int GetIdFromToken(string token)
+        {
+            if (token == null) throw new ArgumentNullException("token");
+            var key = Encoding.ASCII.GetBytes(secretKey.GetSecretKey());
+
+            try
+            {
+                var decodeValue = Jose.JWT.Decode(token, key, JwsAlgorithm.HS256);
+                var result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<dynamic>(decodeValue);
+                return result["user_id"];
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+    
+
+        public bool VerifyTokenAndRole(string token,int role)
+        {
+            if (token == null) throw new ArgumentNullException("token");
+            var key = Encoding.ASCII.GetBytes(secretKey.GetSecretKey());
+
+            try
+            {
+                var decodeValue = Jose.JWT.Decode(token, key, JwsAlgorithm.HS256);
+                var result = new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<dynamic>(decodeValue);
+                if ((result["role"] != role))
+                {
+                    return false;
+                }
             }
             catch
             {
