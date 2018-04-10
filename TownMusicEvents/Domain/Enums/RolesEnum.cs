@@ -10,6 +10,6 @@ namespace Domain.Enums
     {
         FAN,
         ARTIST,
-        VENUE
+        LASTFMARTIST
     };
 }

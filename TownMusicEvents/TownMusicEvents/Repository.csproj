@@ -55,6 +55,14 @@
     <Compile Include="Migrations\201709041450312_first.Designer.cs">
       <DependentUpon>201709041450312_first.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804081832015_dbrefector.cs" />
+    <Compile Include="Migrations\201804081832015_dbrefector.Designer.cs">
+      <DependentUpon>201804081832015_dbrefector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804101033064_lastfm.cs" />
+    <Compile Include="Migrations\201804101033064_lastfm.Designer.cs">
+      <DependentUpon>201804101033064_lastfm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +81,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201709041450312_first.resx">
       <DependentUpon>201709041450312_first.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804081832015_dbrefector.resx">
+      <DependentUpon>201804081832015_dbrefector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804101033064_lastfm.resx">
+      <DependentUpon>201804101033064_lastfm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

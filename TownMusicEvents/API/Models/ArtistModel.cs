@@ -15,10 +15,6 @@ namespace API.Models
         public string Facebook { get; set; }
         public string Instagram { get; set; }
         public string Twitter { get; set; }
-        public string Picture1Url { get; set; }
-        public string Picture2Url { get; set; }
-        public string Picture3Url { get; set; }
-        public string Picture4Url { get; set; }
-        public string Picture5Url { get; set; }
+        public string PictureUrl { get; set; }
     }
 }

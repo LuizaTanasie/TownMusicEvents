@@ -10,46 +10,61 @@ namespace Recommender
 {
     public class Recommender
     {
+
+        public double ComputeAverageRatingFan(Fan fan)
+        {
+            var average = 0;
+            foreach (var rating in fan.Ratings)
+            {
+                average += rating.Score;
+            }
+            average = average / fan.Ratings.Count;
+            return average;
+        }
+
+
         public double CosineCorrelation(Fan activeFan, Fan anotherFan)
         {
             double numerator = 0;
-            var allFavoredArtists = activeFan.Artists.Union(anotherFan.Artists);
-            foreach (var artist in allFavoredArtists)
+            List<Artist> activeFanFavArtists = activeFan.Ratings.Select(r => r.Artist).ToList();
+            List<Artist> anotherFanFavArtists = anotherFan.Ratings.Select(r => r.Artist).ToList();
+            var allRatedArtists = activeFanFavArtists.Union(anotherFanFavArtists);
+            foreach (var artist in allRatedArtists)
             {
                 int activeFanRating = 0;
                 int anotherFanRating = 0;
-                if (activeFan.Artists.Contains(artist))
+                if (activeFanFavArtists.Contains(artist))
                 {
-                    activeFanRating = 1;
+                    activeFanRating = activeFan.Ratings.Where(r => r.Artist == artist).First().Score;
                 }
-                if (anotherFan.Artists.Contains(artist))
+                if (anotherFanFavArtists.Contains(artist))
                 {
-                    anotherFanRating = 1;
+                    anotherFanRating = anotherFan.Ratings.Where(r => r.Artist == artist).First().Score;
                 }
-                numerator = numerator + activeFanRating * anotherFanRating;
+                numerator = numerator + (activeFanRating - ComputeAverageRatingFan(activeFan)) * (anotherFanRating - ComputeAverageRatingFan(anotherFan));
             }
             double denominator = 0;
             double squareRoot1 = 0;
-            foreach (var artist in allFavoredArtists)
+            foreach (var artist in allRatedArtists)
             {
                 int activeFanRating = 0;
-                if (activeFan.Artists.Contains(artist))
+                if (activeFanFavArtists.Contains(artist))
                 {
-                    activeFanRating = 1;
+                    activeFanRating = activeFan.Ratings.Where(r => r.Artist == artist).First().Score;
                 }
-                squareRoot1 = squareRoot1 + activeFanRating * activeFanRating;
+                squareRoot1 = squareRoot1 + Math.Pow(activeFanRating - ComputeAverageRatingFan(activeFan),2);
             }
             squareRoot1 = Math.Sqrt(squareRoot1);
 
             double squareRoot2 = 0;
-            foreach (var artist in allFavoredArtists)
+            foreach (var artist in allRatedArtists)
             {
                 int anotherFanRating = 0;
-                if (anotherFan.Artists.Contains(artist))
+                if (anotherFanFavArtists.Contains(artist))
                 {
-                    anotherFanRating = 1;
+                    anotherFanRating = anotherFan.Ratings.Where(r => r.Artist == artist).First().Score;
                 }
-                squareRoot2 = squareRoot2 + anotherFanRating * anotherFanRating;
+                squareRoot2 = squareRoot2 + Math.Pow(anotherFanRating - ComputeAverageRatingFan(anotherFan), 2);
             }
             squareRoot2 = Math.Sqrt(squareRoot1);
 
@@ -60,7 +75,6 @@ namespace Recommender
             }
             double result = numerator / denominator;
             return result;
-
         }
 
         public Dictionary<Fan, double> FindNearestKNeighbors(Fan activeFan, int k)
@@ -93,14 +107,13 @@ namespace Recommender
             foreach (var pair in neighborhood)
             {
                 double Rbi = 0;
-                var term = CosineCorrelation(activeFan, pair.Key);
-                if (pair.Key.Artists.Contains(artist))
+                if (pair.Key.Ratings.Where(r=>r.Artist == artist).Count()!=0)
                 {
-                    Rbi = 1;
+                    Rbi = pair.Key.Ratings.Where(r => r.Artist == artist).First().Score;
                 }
-                term = term * (Rbi - 1); // 1-average rating of b
+                neighborhoodPreference = neighborhoodPreference + CosineCorrelation(activeFan, pair.Key) * (Rbi - ComputeAverageRatingFan(pair.Key));
             }
-            var result = 1 + 1 / neighborhoodPreferenceAbs + neighborhoodPreference; //first 1-average rating of a
+            var result = ComputeAverageRatingFan(activeFan) + 1 / neighborhoodPreferenceAbs + neighborhoodPreference;
             return result;
 
         }

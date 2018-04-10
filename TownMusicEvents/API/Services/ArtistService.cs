@@ -19,9 +19,8 @@ namespace API.Services
                 foreach (var artist in artistRepository.GetAll())
                 {
                     artistModels.Add(new ArtistModel { ArtistId = artist.ArtistId,
-                      Biography=artist.Biography, Facebook=artist.Facebook, Instagram=artist.Instagram, Name=artist.User.Name,
-                     Picture1Url=artist.Picture1Url, Picture2Url=artist.Picture2Url, Picture3Url=artist.Picture3Url, Picture4Url=artist.Picture4Url,
-                     Picture5Url=artist.Picture5Url, Twitter=artist.Twitter, Website=artist.Website, YouTube= artist.YouTube});
+                     Biography=artist.Biography, Facebook=artist.Facebook, Instagram=artist.Instagram, Name=artist.User.Name,
+                     PictureUrl=artist.PictureUrl, Twitter=artist.Twitter, Website=artist.Website, YouTube= artist.YouTube});
                 }
                 return artistModels;
             }
@@ -45,11 +44,7 @@ namespace API.Services
                     Facebook = artist.Facebook,
                     Instagram = artist.Instagram,
                     Name = artist.User.Name,
-                    Picture1Url = artist.Picture1Url,
-                    Picture2Url = artist.Picture2Url,
-                    Picture3Url = artist.Picture3Url,
-                    Picture4Url = artist.Picture4Url,
-                    Picture5Url = artist.Picture5Url,
+                    PictureUrl = artist.PictureUrl,
                     Twitter = artist.Twitter,
                     Website = artist.Website,
                     YouTube = artist.YouTube
@@ -87,25 +82,9 @@ namespace API.Services
                 {
                     user.Name = updatedArtist.Name;
                 }
-                if (updatedArtist.Picture1Url != "")
+                if (updatedArtist.PictureUrl != "")
                 {
-                    artist.Picture1Url = updatedArtist.Picture1Url;
-                }
-                if (updatedArtist.Picture2Url != "")
-                {
-                    artist.Picture2Url = updatedArtist.Picture2Url;
-                }
-                if (updatedArtist.Picture3Url != "")
-                {
-                    artist.Picture3Url = updatedArtist.Picture3Url;
-                }
-                if (updatedArtist.Picture4Url != "")
-                {
-                    artist.Picture4Url = updatedArtist.Picture4Url;
-                }
-                if (updatedArtist.Picture5Url != "")
-                {
-                    artist.Picture5Url = updatedArtist.Picture5Url;
+                    artist.PictureUrl = updatedArtist.PictureUrl;
                 }
                 if (updatedArtist.Twitter != "")
                 {
