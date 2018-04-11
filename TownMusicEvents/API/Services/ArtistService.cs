@@ -16,7 +16,7 @@ namespace API.Services
             using (var unitOfWork = new UnitOfWork())
             {
                 var artistRepository = unitOfWork.GetRepository<Artist>();
-                foreach (var artist in artistRepository.GetAll())
+                foreach (var artist in artistRepository.GetAll().Where(a=>a.LastFmId==null))
                 {
                     artistModels.Add(new ArtistModel { ArtistId = artist.ArtistId,
                      Biography=artist.Biography, Facebook=artist.Facebook, Instagram=artist.Instagram, Name=artist.User.Name,
