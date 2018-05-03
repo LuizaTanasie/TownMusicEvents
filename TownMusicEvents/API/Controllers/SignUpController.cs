@@ -33,6 +33,27 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Route("api/signup/artist")]
+        public IHttpActionResult SignUpArtist([FromBody] dynamic artist)
+        {
+            var signUpService = new SignUpService();
+            try
+            {
+                List<GenreModelForSelector> genres = artist.genres.ToObject<List<GenreModelForSelector>>();
+                User addedUser = signUpService.SignUpArtist(artist.Name.ToString(), artist.Email.ToString(), 
+                    artist.Password.ToString(), genres);
+                var _authToken = new JwtToken();
+                var token = _authToken.CreateJwt("MusicApp", addedUser.Id, addedUser.Name,
+                    addedUser.Role, 10000);
+                return Ok(token);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
         [Route("api/signup/quiz")]
         public IHttpActionResult PostQuizAnswers([FromBody] dynamic answers)
         {

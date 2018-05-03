@@ -38,5 +38,26 @@ namespace WebAPI.Services
             var genres = service.GetGenresForArtist(idArtist);
             return Ok(genres);
         }
+
+        public IHttpActionResult GetGenresForFan(int idFan)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new GenreService();
+            var genres = service.GetGenresForFan(idFan);
+            return Ok(genres);
+        }
     }
 }

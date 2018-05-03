@@ -27,6 +27,28 @@ namespace API.Services
             }
         }
 
+        public User SignUpArtist(string name, string password, string email, List<GenreModelForSelector> genres)
+        {
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var userRepository = unitOfWork.GetRepository<User>();
+                var artistRepository = unitOfWork.GetRepository<Artist>();
+                var genreRepository = unitOfWork.GetRepository<Genre>();
+                User user = new User { Name = name, Password = password, Email = email, Role = 1 };
+                User addedUser = userRepository.Add(user);
+                unitOfWork.Save();
+                List<Genre> mappedGenres = new List<Genre>();
+                foreach(var genre in genres)
+                {
+                    var foundGenre = genreRepository.Find(genre.id);
+                    addedUser.Genres.Add(foundGenre);
+                }
+                artistRepository.Add(new Artist { ArtistId = addedUser.Id, PictureUrl="/images/user.jpg" });
+                unitOfWork.Save();
+                return addedUser;
+            }
+        }
+
 
         public void PostQuizAnswers(int fanId, List<ArtistLastFmModel> ratings, List<GenreModelForSelector> genres)
         {

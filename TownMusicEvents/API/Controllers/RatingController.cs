@@ -11,9 +11,9 @@ using WebAPI.Security;
 
 namespace API.Controllers
 {
-    public class ArtistController : ApiController
+    public class RatingController : ApiController
     {
-        public IHttpActionResult Get()
+        public IHttpActionResult GetRatingForAnArtist(int artistId, int fanId)
         {
             var headers = Request.Headers;
             if (!headers.Contains("token"))
@@ -29,16 +29,12 @@ namespace API.Controllers
                     return Ok(new { errorCode = "66", message = "unauthorized" });
                 }
             }
-            var service = new ArtistService();
-            var rnd = new Random();
-            var artists = service.GetAllArtists().OrderBy(item => rnd.Next()).ToList();
-            if (artists.Count == 0)
-                return NotFound();
-            return Ok(artists);
+            var service = new RatingService();
+            var rating = service.GetRating(artistId,fanId);
+            return Ok(rating);
         }
 
-        [Route("api/artist/search")]
-        public IHttpActionResult GetSearchResults(string artistName)
+        public IHttpActionResult Post([FromBody]RatingModel ratingModel)
         {
             var headers = Request.Headers;
             if (!headers.Contains("token"))
@@ -49,64 +45,18 @@ namespace API.Controllers
             {
                 var token = headers.GetValues("token").First();
                 var jwt = new JwtToken();
-                if (!jwt.VerifyToken(token))
+                if (!jwt.VerifyTokenAndRole(token, (int)RolesEnum.FAN))
                 {
                     return Ok(new { errorCode = "66", message = "unauthorized" });
                 }
             }
-            var service = new ArtistService();
-            var artists = service.SearchForArtist(artistName);
-            if (artists.Count == 0)
-                return NotFound();
-            return Ok(artists);
-        }
-
-        public IHttpActionResult Get(int id)
-        {
-            var headers = Request.Headers;
-            if (!headers.Contains("token"))
-            {
-                return Ok(new { errorCode = "66", message = "unauthorized" });
-            }
-            if (headers.Contains("token"))
-            {
-                var token = headers.GetValues("token").First();
-                var jwt = new JwtToken();
-                if (!jwt.VerifyToken(token))
-                {
-                    return Ok(new { errorCode = "66", message = "unauthorized" });
-                }
-            }
-            var service = new ArtistService();
-            var artist = service.GetArtist(id);
-            if (artist == null)
-                return NotFound();
-            return Ok(artist);
-        }
-
-        public IHttpActionResult Put([FromBody]ArtistModel artistModel)
-        {
-            var headers = Request.Headers;
-            if (!headers.Contains("token"))
-            {
-                return Ok(new { errorCode = "66", message = "unauthorized" });
-            }
-            if (headers.Contains("token"))
-            {
-                var token = headers.GetValues("token").First();
-                var jwt = new JwtToken();
-                if (!jwt.VerifyTokenAndRole(token,(int)RolesEnum.ARTIST))
-                {
-                    return Ok(new { errorCode = "66", message = "unauthorized" });
-                }
-            }
-            var service = new ArtistService();
+            var service = new RatingService();
             try
             {
-                var artist = service.UpdateArtist(artistModel);
-                return Ok(artist);
+                var rating = service.AddRating(ratingModel.ArtistId, ratingModel.FanId, ratingModel.Score);
+                return Ok(rating);
             }
-            catch(NotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound();
             }
@@ -117,5 +67,33 @@ namespace API.Controllers
 
         }
 
+        public IHttpActionResult GetNoOfGoodRatingsForArtist(int artistId, int when)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new RatingService();
+            try
+            {
+                var ratings = service.GetNoOfGoodRatingsForArtist(artistId, when);
+                return Ok(ratings);
+            }
+            catch (InvalidModelException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

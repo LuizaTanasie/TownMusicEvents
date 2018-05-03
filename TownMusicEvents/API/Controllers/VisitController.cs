@@ -1,7 +1,6 @@
 ﻿using API.Models;
 using API.Services;
 using API.Validation;
-using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +10,9 @@ using WebAPI.Security;
 
 namespace API.Controllers
 {
-    public class ArtistController : ApiController
+    public class VisitController :  ApiController
     {
-        public IHttpActionResult Get()
+        public IHttpActionResult Post([FromBody]VisitModel model)
         {
             var headers = Request.Headers;
             if (!headers.Contains("token"))
@@ -29,86 +28,17 @@ namespace API.Controllers
                     return Ok(new { errorCode = "66", message = "unauthorized" });
                 }
             }
-            var service = new ArtistService();
-            var rnd = new Random();
-            var artists = service.GetAllArtists().OrderBy(item => rnd.Next()).ToList();
-            if (artists.Count == 0)
-                return NotFound();
-            return Ok(artists);
-        }
-
-        [Route("api/artist/search")]
-        public IHttpActionResult GetSearchResults(string artistName)
-        {
-            var headers = Request.Headers;
-            if (!headers.Contains("token"))
-            {
-                return Ok(new { errorCode = "66", message = "unauthorized" });
-            }
-            if (headers.Contains("token"))
-            {
-                var token = headers.GetValues("token").First();
-                var jwt = new JwtToken();
-                if (!jwt.VerifyToken(token))
-                {
-                    return Ok(new { errorCode = "66", message = "unauthorized" });
-                }
-            }
-            var service = new ArtistService();
-            var artists = service.SearchForArtist(artistName);
-            if (artists.Count == 0)
-                return NotFound();
-            return Ok(artists);
-        }
-
-        public IHttpActionResult Get(int id)
-        {
-            var headers = Request.Headers;
-            if (!headers.Contains("token"))
-            {
-                return Ok(new { errorCode = "66", message = "unauthorized" });
-            }
-            if (headers.Contains("token"))
-            {
-                var token = headers.GetValues("token").First();
-                var jwt = new JwtToken();
-                if (!jwt.VerifyToken(token))
-                {
-                    return Ok(new { errorCode = "66", message = "unauthorized" });
-                }
-            }
-            var service = new ArtistService();
-            var artist = service.GetArtist(id);
-            if (artist == null)
-                return NotFound();
-            return Ok(artist);
-        }
-
-        public IHttpActionResult Put([FromBody]ArtistModel artistModel)
-        {
-            var headers = Request.Headers;
-            if (!headers.Contains("token"))
-            {
-                return Ok(new { errorCode = "66", message = "unauthorized" });
-            }
-            if (headers.Contains("token"))
-            {
-                var token = headers.GetValues("token").First();
-                var jwt = new JwtToken();
-                if (!jwt.VerifyTokenAndRole(token,(int)RolesEnum.ARTIST))
-                {
-                    return Ok(new { errorCode = "66", message = "unauthorized" });
-                }
-            }
-            var service = new ArtistService();
+            var service = new VisitService();
             try
             {
-                var artist = service.UpdateArtist(artistModel);
-                return Ok(artist);
-            }
-            catch(NotFoundException ex)
-            {
-                return NotFound();
+                var visit = service.AddVisit(model.ArtistId, model.FanId, model.HasClickedALink);
+                return Ok(new VisitModel
+                {
+                    ArtistId = visit.ArtistId,
+                    HasClickedALink = visit.HasClickedALink,
+                    FanId = visit.FanId,
+                    Date = visit.Date
+                });
             }
             catch (InvalidModelException ex)
             {
@@ -117,5 +47,62 @@ namespace API.Controllers
 
         }
 
+        public IHttpActionResult GetNumberOfVisitsForArtist(int artistId, int whenVisited)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new VisitService();
+            try
+            {
+                var visits = service.GetNumberOfVisitsForArtist(artistId, whenVisited);
+                return Ok(visits);
+            }
+            catch (InvalidModelException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+  
+        }
+
+        public IHttpActionResult GetNumberOfClickedLinksForArtist(int artistId, int whenClicked)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new VisitService();
+            try
+            {
+                var links = service.GetNumberOfClickedLinksForArtist(artistId, whenClicked);
+                return Ok(links);
+            }
+            catch (InvalidModelException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

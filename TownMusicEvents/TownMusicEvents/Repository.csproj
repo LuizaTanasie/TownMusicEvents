@@ -63,6 +63,14 @@
     <Compile Include="Migrations\201804101033064_lastfm.Designer.cs">
       <DependentUpon>201804101033064_lastfm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804301131177_visit.cs" />
+    <Compile Include="Migrations\201804301131177_visit.Designer.cs">
+      <DependentUpon>201804301131177_visit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805011658444_uppercase.cs" />
+    <Compile Include="Migrations\201805011658444_uppercase.Designer.cs">
+      <DependentUpon>201805011658444_uppercase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +95,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804101033064_lastfm.resx">
       <DependentUpon>201804101033064_lastfm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804301131177_visit.resx">
+      <DependentUpon>201804301131177_visit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805011658444_uppercase.resx">
+      <DependentUpon>201805011658444_uppercase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

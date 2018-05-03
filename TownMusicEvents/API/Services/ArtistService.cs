@@ -26,6 +26,26 @@ namespace API.Services
             }
         }
 
+        public List<ArtistModel> SearchForArtist(string artistName)
+        {
+            var artistModels = new List<ArtistModel>();
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var artistRepository = unitOfWork.GetRepository<Artist>();
+                foreach (var artist in artistRepository.GetAll()
+                    .Where(a => a.LastFmId == null && a.User.Name.ToLower().StartsWith(artistName.ToLower())))
+                {
+                    artistModels.Add(new ArtistModel
+                    {
+                        ArtistId = artist.ArtistId,
+                        Name = artist.User.Name,
+                        PictureUrl = artist.PictureUrl
+                    });
+                }
+                return artistModels;
+            }
+        }
+
         public ArtistModel GetArtist(int id)
         {
 
@@ -47,7 +67,9 @@ namespace API.Services
                     PictureUrl = artist.PictureUrl,
                     Twitter = artist.Twitter,
                     Website = artist.Website,
-                    YouTube = artist.YouTube
+                    YouTube = artist.YouTube,
+                    SoundCloud = artist.SoundCloud,
+                    Spotify = artist.Spotify
                 };
 
             }
@@ -97,6 +119,14 @@ namespace API.Services
                 if (updatedArtist.YouTube != "")
                 {
                     artist.YouTube = updatedArtist.YouTube;
+                }
+                if (updatedArtist.Spotify != "")
+                {
+                    artist.Spotify = updatedArtist.Spotify;
+                }
+                if (updatedArtist.SoundCloud != "")
+                {
+                    artist.SoundCloud = updatedArtist.SoundCloud;
                 }
                 userRepository.Update(user);
                 artistRepository.Update(artist);

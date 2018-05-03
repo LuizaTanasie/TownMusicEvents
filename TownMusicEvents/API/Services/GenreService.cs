@@ -39,5 +39,21 @@ namespace WebAPI.Services
                 return genreModels;
             }
         }
+
+        public List<GenreModelForSelector> GetGenresForFan(int fanId)
+        {
+            var genreModels = new List<GenreModelForSelector>();
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var fanRepository = unitOfWork.GetRepository<Fan>();
+                var fan = fanRepository.Find(fanId);
+                var genres = fan.User.Genres;
+                foreach (var genre in genres)
+                {
+                    genreModels.Add(item: new GenreModelForSelector { id = genre.Id, value = genre.Name, label = genre.Name });
+                }
+                return genreModels;
+            }
+        }
     }
 }

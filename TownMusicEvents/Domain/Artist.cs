@@ -18,6 +18,8 @@ namespace Domain
         public string Facebook { get; set; }
         public string Instagram { get; set; }
         public string Twitter { get; set; }
+        public string Spotify { get; set; }
+        public string SoundCloud { get; set; }
         public string PictureUrl { get; set; }
         public string LastFmId { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
