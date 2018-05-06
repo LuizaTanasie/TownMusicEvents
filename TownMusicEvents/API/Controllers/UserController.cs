@@ -12,8 +12,6 @@ namespace API.Controllers
     public class UserController : ApiController
     {
 
-
-
         public IHttpActionResult PutNewPassword(int idUser, string oldPassword, string newPassword)
         {
             var headers = Request.Headers;

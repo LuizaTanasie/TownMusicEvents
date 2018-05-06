@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using API.Validation;
 using Domain;
 using Domain.Enums;
 using System;
@@ -17,8 +18,18 @@ namespace API.Services
             using (var unitOfWork = new UnitOfWork())
             {
                 var userRepository = unitOfWork.GetRepository<User>();
+                if (userRepository.GetAll().Where(usr => usr.Email == email).Count() != 0)
+                {
+                    throw new InvalidModelException("Exista deja un utilizator cu aceasta adresa de email.");
+                }
                 var fanRepository = unitOfWork.GetRepository<Fan>();
                 User user = new User { Name = name, Password = password, Email = email, Role=0 };
+                UserValidator userValidator = new UserValidator();
+                var checkResult = userValidator.Check(user);
+                if (checkResult.Count != 0)
+                {
+                    throw new InvalidModelException(String.Join("\n", checkResult.ToArray()));
+                }
                 User addedUser = userRepository.Add(user);
                 unitOfWork.Save();
                 fanRepository.Add(new Fan { FanId = addedUser.Id });
@@ -32,9 +43,19 @@ namespace API.Services
             using (var unitOfWork = new UnitOfWork())
             {
                 var userRepository = unitOfWork.GetRepository<User>();
+                if (userRepository.GetAll().Where(usr => usr.Email == email).Count() != 0)
+                {
+                    throw new InvalidModelException("Exista deja un utilizator cu aceasta adresa de email.");
+                }
                 var artistRepository = unitOfWork.GetRepository<Artist>();
                 var genreRepository = unitOfWork.GetRepository<Genre>();
                 User user = new User { Name = name, Password = password, Email = email, Role = 1 };
+                UserValidator userValidator = new UserValidator();
+                var checkResult = userValidator.Check(user);
+                if (checkResult.Count != 0)
+                {
+                    throw new InvalidModelException(String.Join("\n", checkResult.ToArray()));
+                }
                 User addedUser = userRepository.Add(user);
                 unitOfWork.Save();
                 List<Genre> mappedGenres = new List<Genre>();

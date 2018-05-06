@@ -14,7 +14,6 @@ namespace API.Services
 
         public void UpdatePassword(int id, string oldPassword, string newPassword)
         {
-
             using (var unitOfWork = new UnitOfWork())
             {
                 var userRepository = unitOfWork.GetRepository<User>();
@@ -30,7 +29,12 @@ namespace API.Services
                     unitOfWork.Save();
                 }
                 else throw new InvalidModelException("Parola veche introdusa este incorecta.");
-                
+                PasswordValidator passwordValidator = new PasswordValidator();
+                var checkResult = passwordValidator.Check(newPassword);
+                if (checkResult.Count != 0)
+                {
+                    throw new InvalidModelException(String.Join("\n", checkResult.ToArray()));
+                }
             }
         }
 

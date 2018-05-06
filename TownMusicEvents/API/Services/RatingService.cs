@@ -16,6 +16,12 @@ namespace API.Services
         {
             using (var unitOfWork = new UnitOfWork())
             {
+                RatingValidator ratingValidator = new RatingValidator();
+                var checkResult = ratingValidator.Check(score);
+                if (checkResult.Count != 0)
+                {
+                    throw new InvalidModelException(String.Join("\n", checkResult.ToArray()));
+                }
                 var ratingRepository = unitOfWork.GetRepository<Rating>();
                 Rating foundRating = ratingRepository.GetAll().Where(r => r.ArtistId == artistId && r.FanId == fanId).FirstOrDefault();
                 Rating newRating = null;

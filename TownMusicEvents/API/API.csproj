@@ -225,6 +225,9 @@
     <Compile Include="Validation\InvalidModelException.cs" />
     <Compile Include="Validation\IValidator.cs" />
     <Compile Include="Validation\NotFoundException.cs" />
+    <Compile Include="Validation\PasswordValidator.cs" />
+    <Compile Include="Validation\RatingValidator.cs" />
+    <Compile Include="Validation\UserValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
