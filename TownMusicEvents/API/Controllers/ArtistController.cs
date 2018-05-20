@@ -61,6 +61,29 @@ namespace API.Controllers
             return Ok(artists);
         }
 
+        public IHttpActionResult GetRatedArtistsByAFan(int fanId)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new ArtistService();
+            var artists = service.GetRatedArtistsByAFan(fanId);
+            if (artists.Count == 0)
+                return NotFound();
+            return Ok(artists);
+        }
+
         public IHttpActionResult Get(int id)
         {
             var headers = Request.Headers;

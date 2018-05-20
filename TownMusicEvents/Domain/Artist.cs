@@ -23,6 +23,7 @@ namespace Domain
         public string PictureUrl { get; set; }
         public string LastFmId { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
+        public virtual ICollection<Recommendation> Recommendations { get; set; }
         public virtual ICollection<NewsItem> NewsItems { get; set; }
         public virtual User User { get; set; }
 
@@ -30,6 +31,7 @@ namespace Domain
         {
             Ratings = new HashSet<Rating>();
             NewsItems = new HashSet<NewsItem>();
+            Recommendations = new HashSet<Recommendation>();
         }
 
         public override bool Equals(object obj)

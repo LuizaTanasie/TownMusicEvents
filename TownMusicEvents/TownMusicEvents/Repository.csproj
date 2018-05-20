@@ -71,6 +71,10 @@
     <Compile Include="Migrations\201805011658444_uppercase.Designer.cs">
       <DependentUpon>201805011658444_uppercase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805141509503_recommender.cs" />
+    <Compile Include="Migrations\201805141509503_recommender.Designer.cs">
+      <DependentUpon>201805141509503_recommender.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805011658444_uppercase.resx">
       <DependentUpon>201805011658444_uppercase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805141509503_recommender.resx">
+      <DependentUpon>201805141509503_recommender.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

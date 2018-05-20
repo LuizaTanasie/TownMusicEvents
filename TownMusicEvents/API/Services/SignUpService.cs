@@ -95,7 +95,7 @@ namespace API.Services
                         unitOfWork.Save();
                     }
                     var foundArtist  = artistRepository.GetAll().Where(artist => artist.LastFmId == rating.ArtistId).First();
-                    ratingRepository.Add(new Rating { ArtistId = foundArtist.ArtistId, FanId = fanId, Score = rating.Score });
+                    ratingRepository.Add(new Rating { ArtistId = foundArtist.ArtistId, FanId = fanId, Score = rating.Score, Date=DateTime.Now });
                 }
                 unitOfWork.Save();
 

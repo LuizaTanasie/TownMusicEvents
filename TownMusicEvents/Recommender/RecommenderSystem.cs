@@ -8,11 +8,15 @@ using TownMusicEvents;
 
 namespace Recommender
 {
-    public class Recommender
+    public static class RecommenderSystem
     {
 
-        public double ComputeAverageRatingFan(Fan fan)
+        private static double ComputeAverageRatingFan(Fan fan)
         {
+            if (fan.Ratings.Count == 0)
+            {
+                return 0;
+            }
             var average = 0;
             foreach (var rating in fan.Ratings)
             {
@@ -23,23 +27,23 @@ namespace Recommender
         }
 
 
-        public double CosineCorrelation(Fan activeFan, Fan anotherFan)
+        private static double CosineCorrelation(Fan activeFan, Fan anotherFan)
         {
             double numerator = 0;
             List<Artist> activeFanFavArtists = activeFan.Ratings.Select(r => r.Artist).ToList();
             List<Artist> anotherFanFavArtists = anotherFan.Ratings.Select(r => r.Artist).ToList();
-            var allRatedArtists = activeFanFavArtists.Union(anotherFanFavArtists);
+            List<Artist> allRatedArtists = activeFanFavArtists.Union(anotherFanFavArtists).ToList();
             foreach (var artist in allRatedArtists)
             {
                 int activeFanRating = 0;
                 int anotherFanRating = 0;
                 if (activeFanFavArtists.Contains(artist))
                 {
-                    activeFanRating = activeFan.Ratings.Where(r => r.Artist == artist).First().Score;
+                    activeFanRating = activeFan.Ratings.Where(r => r.ArtistId == artist.ArtistId).First().Score;
                 }
                 if (anotherFanFavArtists.Contains(artist))
                 {
-                    anotherFanRating = anotherFan.Ratings.Where(r => r.Artist == artist).First().Score;
+                    anotherFanRating = anotherFan.Ratings.Where(r => r.ArtistId == artist.ArtistId).First().Score;
                 }
                 numerator = numerator + (activeFanRating - ComputeAverageRatingFan(activeFan)) * (anotherFanRating - ComputeAverageRatingFan(anotherFan));
             }
@@ -50,7 +54,7 @@ namespace Recommender
                 int activeFanRating = 0;
                 if (activeFanFavArtists.Contains(artist))
                 {
-                    activeFanRating = activeFan.Ratings.Where(r => r.Artist == artist).First().Score;
+                    activeFanRating = activeFan.Ratings.Where(r => r.ArtistId == artist.ArtistId).First().Score;
                 }
                 squareRoot1 = squareRoot1 + Math.Pow(activeFanRating - ComputeAverageRatingFan(activeFan),2);
             }
@@ -62,7 +66,7 @@ namespace Recommender
                 int anotherFanRating = 0;
                 if (anotherFanFavArtists.Contains(artist))
                 {
-                    anotherFanRating = anotherFan.Ratings.Where(r => r.Artist == artist).First().Score;
+                    anotherFanRating = anotherFan.Ratings.Where(r => r.ArtistId == artist.ArtistId).First().Score;
                 }
                 squareRoot2 = squareRoot2 + Math.Pow(anotherFanRating - ComputeAverageRatingFan(anotherFan), 2);
             }
@@ -77,7 +81,7 @@ namespace Recommender
             return result;
         }
 
-        public Dictionary<Fan, double> FindNearestKNeighbors(Fan activeFan, int k)
+        private static Dictionary<Fan, double> FindNearestKNeighbors(Fan activeFan, int k)
         {
             Dictionary<Fan, double> similarityToOthers = new Dictionary<Fan, double>();
             using (var unitOfWork = new UnitOfWork())
@@ -95,7 +99,7 @@ namespace Recommender
             return sortedSimilarity.Take(k).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-        public double CFpredictedPreference(Fan activeFan, Artist artist, int k)
+        private static double CFpredictedPreference(Fan activeFan, Artist artist, int k)
         {
             double neighborhoodPreferenceAbs = 0;
             var neighborhood = FindNearestKNeighbors(activeFan, k);
@@ -109,14 +113,32 @@ namespace Recommender
                 double Rbi = 0;
                 if (pair.Key.Ratings.Where(r=>r.Artist == artist).Count()!=0)
                 {
-                    Rbi = pair.Key.Ratings.Where(r => r.Artist == artist).First().Score;
+                    Rbi = pair.Key.Ratings.Where(r => r.ArtistId == artist.ArtistId).First().Score;
                 }
                 neighborhoodPreference = neighborhoodPreference + CosineCorrelation(activeFan, pair.Key) * (Rbi - ComputeAverageRatingFan(pair.Key));
             }
             var result = ComputeAverageRatingFan(activeFan) + 1 / neighborhoodPreferenceAbs + neighborhoodPreference;
             return result;
-
         }
 
+        public static List<Artist> GetRecommendations(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
+        {
+            Dictionary<Artist, double> predictions = new Dictionary<Artist, double>();
+            List<Artist> recommendedArtists = new List<Artist>();
+            foreach (Artist artist in artists)
+            {
+                if (fan.Ratings.Where(r => r.ArtistId == artist.ArtistId).Count() == 0)
+                {
+                    predictions.Add(artist, CFpredictedPreference(fan, artist, neighborhoodSize));
+                }
+            }
+            var sortedPredictions = predictions.ToList().OrderByDescending(pair => pair.Value).ToList();
+            foreach (var pred in sortedPredictions.Take(noOfRecommendations))
+            {
+                recommendedArtists.Add(pred.Key);
+            }
+            return recommendedArtists;
+        }
+            
     }
 }

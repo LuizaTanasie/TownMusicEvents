@@ -19,7 +19,7 @@ namespace TownMusicEvents
         public DbSet<NewsItem> NewsItems { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Visit> Visits { get; set; }
-
+        public DbSet<Recommendation> Recommendations { get; set; }
 
         public DatabaseContext()
             : base("name = DatabaseContext")

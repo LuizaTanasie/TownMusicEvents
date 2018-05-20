@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using Domain;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,32 @@ namespace API.Services
                 }
                 return artistModels;
             }
+        }
+
+        public List<AstistWithRatingModel> GetRatedArtistsByAFan(int fanId)
+        {
+            var artistModels = new List<AstistWithRatingModel>();
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var fanRepository = unitOfWork.GetRepository<Fan>();
+                var artistRepository = unitOfWork.GetRepository<Artist>();
+                var fan = fanRepository.Find(fanId);
+                foreach (var rating in fan.Ratings)
+                {
+                    Artist artist = artistRepository.Find(rating.ArtistId);
+                    if (artist.User.Role != (int)RolesEnum.LASTFMARTIST)
+                    {
+                        artistModels.Add(new AstistWithRatingModel
+                        {
+                            ArtistId = artist.ArtistId,
+                            Name = artist.User.Name,
+                            Score = rating.Score,
+                            PictureUrl = artist.PictureUrl
+                        });
+                    }
+                }
+            }
+            return artistModels;
         }
 
         public ArtistModel GetArtist(int id)
