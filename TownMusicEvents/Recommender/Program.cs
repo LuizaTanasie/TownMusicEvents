@@ -10,7 +10,7 @@ namespace Recommender
     {
         static void Main(string[] args)
         {
-            GenresInit genresInit = new GenresInit();
+
             //genresInit.InitializeGenresInDB();
         }
     }

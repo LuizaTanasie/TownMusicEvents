@@ -54,7 +54,7 @@ namespace API.Controllers
             try
             {
                 var rating = service.AddRating(ratingModel.ArtistId, ratingModel.FanId, ratingModel.Score);
-                return Ok(rating);
+                return Ok(new RatingModel {Score = rating.Score});
             }
             catch (NotFoundException ex)
             {

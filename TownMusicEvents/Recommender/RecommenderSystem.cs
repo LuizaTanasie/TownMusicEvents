@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,7 +133,10 @@ namespace Recommender
                     predictions.Add(artist, CFpredictedPreference(fan, artist, neighborhoodSize));
                 }
             }
-            var sortedPredictions = predictions.ToList().OrderByDescending(pair => pair.Value).ToList();
+            var sortedPredictions = predictions.ToList()
+                .Where(x=>x.Key.User.Role==(int)RolesEnum.ARTIST)
+                .OrderByDescending(pair => pair.Value)
+                .ToList();
             foreach (var pred in sortedPredictions.Take(noOfRecommendations))
             {
                 recommendedArtists.Add(pred.Key);
