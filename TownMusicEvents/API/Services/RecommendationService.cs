@@ -11,7 +11,7 @@ namespace API.Services
 {
     public class RecommendationService
     {
-        public List<ArtistModel> GetRecommendedArtists(int fanId)
+        public List<RecommendedArtist> GetRecommendedArtists(int fanId)
         {
             var artistModels = new List<ArtistModel>();
             using (var unitOfWork = new UnitOfWork())
@@ -20,16 +20,7 @@ namespace API.Services
                 var fanRepository = unitOfWork.GetRepository<Fan>();
                 Fan foundFan = fanRepository.Find(fanId);
                 var results = MatlabRecommender.GetRecommendations(foundFan, artistRepository.GetAll().ToList(), 4, 3);
-                foreach (var result in results)
-                {
-                    artistModels.Add(new ArtistModel
-                    {
-                        ArtistId = result.ArtistId,
-                        Name = result.User.Name,
-                        PictureUrl = result.PictureUrl
-                    });
-                }
-                return artistModels;
+                return results;
             }
         }
     }

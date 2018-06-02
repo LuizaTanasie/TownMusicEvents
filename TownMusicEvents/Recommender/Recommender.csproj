@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileOperations.cs" />
     <Compile Include="Initialization\GenresInit.cs" />
     <Compile Include="MatlabRecommender.cs" />
     <Compile Include="Program.cs" />

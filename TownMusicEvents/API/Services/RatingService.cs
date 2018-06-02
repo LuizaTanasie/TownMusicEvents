@@ -2,6 +2,7 @@
 using API.Validation;
 using Domain;
 using Domain.Enums;
+using Recommender;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,11 +31,13 @@ namespace API.Services
                     foundRating.Score = score;
                     foundRating.Date = DateTime.Now;
                     ratingRepository.Update(foundRating);
-                    newRating = foundRating;  
+                    newRating = foundRating;
+                    FileOperations.SaveRatingDataToFile();
                 }
                 else if (foundRating == null)
                 {
                     newRating = ratingRepository.Add(new Rating { ArtistId = artistId, FanId = fanId, Score = score, Date = DateTime.Now });
+                    FileOperations.AppendNewRatingLineToFile(fanId, artistId, score);
                 }
                 unitOfWork.Save();
                 return newRating;
@@ -48,7 +51,6 @@ namespace API.Services
             {
                 var ratingRepository = unitOfWork.GetRepository<Rating>();
                 Rating foundRating = ratingRepository.GetAll().Where(r => r.ArtistId == artistId && r.FanId == fanId).FirstOrDefault();
-                Rating newRating = null;
                 if (foundRating != null)
                 {
                     return new RatingModel { ArtistId = artistId, FanId = fanId, Score = foundRating.Score };

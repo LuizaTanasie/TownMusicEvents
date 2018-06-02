@@ -13,34 +13,8 @@ namespace Recommender
 {
     public static class MatlabRecommender
     {
-        public static void SaveDataToFile()
-        {
-            using (var unitOfWork = new UnitOfWork())
-            {
-                var ratingRepository = unitOfWork.GetRepository<Rating>();
-                using (StreamWriter writetext = new StreamWriter("rating-data.txt"))
-                {
-                    foreach (var r in ratingRepository.GetAll())
-                    {
-                        writetext.WriteLine(r.FanId + "," + r.ArtistId + "," + r.Score);
-                    }
-                }
-            }
-        }
 
-        public static void AppendNewLineInFile(int fanId, int artistId, int score)
-        {
-            using (var unitOfWork = new UnitOfWork())
-            {
-                var ratingRepository = unitOfWork.GetRepository<Rating>();
-                using (StreamWriter writetext = new StreamWriter("rating-data.txt",true))
-                {
-                        writetext.WriteLine(fanId + "," + artistId + "," + score);
-                }
-            }
-        }
-
-        public static List<Artist> GetRecommendations(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
+        public static List<RecommendedArtist> GetRecommendationsOnRatings(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
         {
             List<Artist> recommendedArtists = new List<Artist>();
             MLApp.MLApp matlab = new MLApp.MLApp();
@@ -51,18 +25,127 @@ namespace Recommender
             matlab.Feval("getRecommendations", 1, out result, fan.FanId,3);
 
             // Display result 
-            object[] ids = result as object[];
-            List<int> artistIds = ((IEnumerable)ids[0]).Cast<int>().ToList();
+            object[] res = result as object[];
+            object arr = res[0];
 
-            foreach (var artistId in artistIds.Take(noOfRecommendations))
+            double[,] pairs = (double[,])arr;
+            List<RecommendedArtist> recommendations = new List<RecommendedArtist>();           
+
+            for (int i = 0; i < pairs.Length/2; i++)
             {
-                recommendedArtists.Add(artists.Where(a=>a.ArtistId==artistId && 
-                a.User.Role == (int)RolesEnum.ARTIST).FirstOrDefault());
+                var artist = artists.Where(a => a.User.Role == (int)RolesEnum.ARTIST && a.ArtistId == pairs[i, 0]).FirstOrDefault();
+                if (artist != null && pairs[i, 1]>=3)
+                {
+                    recommendations.Add(new RecommendedArtist
+                    {
+                        Id = artist.ArtistId,
+                        Name = artist.User.Name,
+                        Score = pairs[i, 1]*20,
+                        PictureUrl = artist.PictureUrl,
+                        Why = "Acest artist iti este recomandat deoarece alte persoane cu gusturi similare i-au oferit scoruri mari." +
+                    "Valoarea estimata a notei tale pentru acest artist este " + pairs[i, 1]+"."
+                    });
+                }
             }
+            return recommendations.Take(noOfRecommendations).ToList();
+        }
+
+        public static List<RecommendedArtist> GetRecommendations(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
+        {
+            List<RecommendedArtist> recommendedArtists = new List<RecommendedArtist>();
+            var byRating = GetRecommendationsOnRatings(fan, artists, neighborhoodSize, noOfRecommendations);
+            var byGenres = GetRecommendationsOnGenre(fan.User, artists,noOfRecommendations);
+            if (fan.Ratings.Count == 0 && fan.User.Genres.Count!=0 && byRating.Count!=0)
+            {
+                return byGenres;
+            }
+            else if (fan.Ratings.Count != 0 && fan.User.Genres.Count == 0 && byGenres.Count!=0)
+            {
+                return byRating;
+            }
+            if ((fan.Ratings.Count == 0 && fan.User.Genres.Count == 0) || (byGenres==null || byRating==null))
+            {
+                throw new Exception("Ne pare rau, nu avem suficiente date pentru a-ti recomanda artisti relevanti.");
+            }
+            recommendedArtists = byRating;
+            foreach(var reco in byGenres)
+            {
+                var found = recommendedArtists.Find(r => r.Id == reco.Id);
+                if (found!=null)
+                {
+                    found.Why += '\n' + reco.Why;
+                    if (found.Score< reco.Score)
+                    {
+                        found.Score = reco.Score;
+                    }
+                }
+                else
+                {
+                    recommendedArtists.Add(reco);
+                }
+            }
+            recommendedArtists = recommendedArtists.OrderByDescending(x => x.Score).ToList();
             return recommendedArtists;
+        }
+
+        public static List<RecommendedArtist> GetRecommendationsOnGenre(User fan, List<Artist> artists, int noOfRecommendations)
+        {
+            String genresTxt = "";
+
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var genresRepository = unitOfWork.GetRepository<Genre>();
+                foreach (Genre g in genresRepository.GetAll())
+                {
+                    if (fan.Genres.Where(x=>x.Id==g.Id).Count()!=0)
+                    {
+                        genresTxt+= fan.Id + "," + g.Id + "," + 1+";";
+                    }
+                    else
+                    {
+                        genresTxt += fan.Id + "," + g.Id + "," + 0 +";";
+                    }
+                }
+            }
+            List<Artist> recommendedArtists = new List<Artist>();
+            MLApp.MLApp matlab = new MLApp.MLApp();
+            matlab.Execute(@"cd C:\Users\Luiza");
+            object result = null;
+
+            // Call the MATLAB function myfunc
+            matlab.Feval("genreSimilarity", 1, out result, genresTxt);
+
+            // Display result 
+            object[] res = result as object[];
+            object arr = res[0];
+
+            double[,] pairs = (double[,])arr;
+            List<RecommendedArtist> recommendations = new List<RecommendedArtist>(); 
+            for (int i = 0; i < pairs.Length/2; i++)
+            {
+                var artist = artists.Where(a => a.User.Role == (int)RolesEnum.ARTIST && a.ArtistId == pairs[i,0]).FirstOrDefault();
+                if (artist != null && pairs[i, 1] * 100 > 10) 
+                {
+                    recommendations.Add(new RecommendedArtist
+                    {
+                        Id = artist.ArtistId,
+                        Name = artist.User.Name,
+                        Score = pairs[i, 1],
+                        PictureUrl = artist.PictureUrl,
+                        Why = "Acest artist iti este recomandat deoarece genurile tale muzicale preferate se potrivesc cu ale sale" +
+                        " in proportie de " + pairs[i, 1] * 100 + "%."
+                    });
+                }
+            }
+            return recommendations.Take(noOfRecommendations).ToList();
         }
 
 
 
+    }
+    internal class Result
+    {
+        int Id { get; set; }
+        int Score { get; set; }
     }
 }

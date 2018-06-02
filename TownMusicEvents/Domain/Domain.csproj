@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Artist.cs" />
+    <Compile Include="RecommendedArtist.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Enums\WhenEnum.cs" />
     <Compile Include="Fan.cs" />
