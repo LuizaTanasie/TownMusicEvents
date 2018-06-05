@@ -15,11 +15,9 @@ namespace Domain
         public string PhotoUrl { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<Recommendation> Recommendations { get; set; }
         public Fan()
         {
             Ratings = new HashSet<Rating>();
-            Recommendations = new HashSet<Recommendation>();
         }
 
     }

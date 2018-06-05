@@ -23,15 +23,11 @@ namespace Domain
         public string PictureUrl { get; set; }
         public string LastFmId { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<Recommendation> Recommendations { get; set; }
-        public virtual ICollection<NewsItem> NewsItems { get; set; }
         public virtual User User { get; set; }
 
         public Artist()
         {
             Ratings = new HashSet<Rating>();
-            NewsItems = new HashSet<NewsItem>();
-            Recommendations = new HashSet<Recommendation>();
         }
 
         public override bool Equals(object obj)
@@ -42,7 +38,7 @@ namespace Domain
 
         public override int GetHashCode()
         {
-            var hashCode = 1585815464;
+            var hashCode = 1869143685;
             hashCode = hashCode * -1521134295 + ArtistId.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Biography);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Website);
@@ -50,9 +46,11 @@ namespace Domain
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Facebook);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Instagram);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Twitter);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Spotify);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(SoundCloud);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PictureUrl);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LastFmId);
             hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<Rating>>.Default.GetHashCode(Ratings);
-            hashCode = hashCode * -1521134295 + EqualityComparer<ICollection<NewsItem>>.Default.GetHashCode(NewsItems);
             hashCode = hashCode * -1521134295 + EqualityComparer<User>.Default.GetHashCode(User);
             return hashCode;
         }

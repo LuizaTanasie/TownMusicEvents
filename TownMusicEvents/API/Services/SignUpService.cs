@@ -2,6 +2,7 @@
 using API.Validation;
 using Domain;
 using Domain.Enums;
+using Recommender;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +65,7 @@ namespace API.Services
                     var foundGenre = genreRepository.Find(genre.id);
                     addedUser.Genres.Add(foundGenre);
                 }
+                FileOperations.SaveGenreDataToFile();
                 artistRepository.Add(new Artist { ArtistId = addedUser.Id, PictureUrl="/images/user.jpg" });
                 unitOfWork.Save();
                 return addedUser;
@@ -85,6 +87,7 @@ namespace API.Services
                     var foundGenre = genreRepository.Find(genre.id);
                     foundUser.Genres.Add(foundGenre);
                 }
+                FileOperations.SaveGenreDataToFile();
                 foreach (var rating in ratings)
                 {
                     if (artistRepository.GetAll().Where(artist => artist.LastFmId == rating.ArtistId).ToList().Count == 0) 

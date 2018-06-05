@@ -16,10 +16,8 @@ namespace TownMusicEvents
         public DbSet<Fan> Fans { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<NewsItem> NewsItems { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Visit> Visits { get; set; }
-        public DbSet<Recommendation> Recommendations { get; set; }
 
         public DatabaseContext()
             : base("name = DatabaseContext")

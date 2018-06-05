@@ -42,8 +42,8 @@ namespace Recommender
                         Name = artist.User.Name,
                         Score = pairs[i, 1]*20,
                         PictureUrl = artist.PictureUrl,
-                        Why = "Acest artist iti este recomandat deoarece alte persoane cu gusturi similare i-au oferit scoruri mari." +
-                    "Valoarea estimata a notei tale pentru acest artist este " + pairs[i, 1]+"."
+                        Why = "Acest artist iti este recomandat deoarece alte persoane cu preferinte similare alor tale il apreciaza."+
+                    "Valoarea estimata a notei tale pentru acest artist este " + Math.Round(pairs[i, 1], 2)+"."
                     });
                 }
             }
@@ -124,16 +124,16 @@ namespace Recommender
             for (int i = 0; i < pairs.Length/2; i++)
             {
                 var artist = artists.Where(a => a.User.Role == (int)RolesEnum.ARTIST && a.ArtistId == pairs[i,0]).FirstOrDefault();
-                if (artist != null && pairs[i, 1] * 100 > 10) 
+                if (artist != null && pairs[i, 1] * 100 > 10 && artist.Ratings.Where(r=>r.FanId==fan.Id).Count()==0) 
                 {
                     recommendations.Add(new RecommendedArtist
                     {
                         Id = artist.ArtistId,
                         Name = artist.User.Name,
-                        Score = pairs[i, 1],
+                        Score = pairs[i, 1]*100,
                         PictureUrl = artist.PictureUrl,
                         Why = "Acest artist iti este recomandat deoarece genurile tale muzicale preferate se potrivesc cu ale sale" +
-                        " in proportie de " + pairs[i, 1] * 100 + "%."
+                        " in proportie de " + Math.Round(pairs[i, 1] * 100, 2) + "%."
                     });
                 }
             }
@@ -143,9 +143,5 @@ namespace Recommender
 
 
     }
-    internal class Result
-    {
-        int Id { get; set; }
-        int Score { get; set; }
-    }
+
 }
