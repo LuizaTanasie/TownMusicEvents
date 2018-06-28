@@ -1,7 +1,6 @@
 function recommendedArtists = getRecommendations(fanId, k)
     [MS,UniqueFans,UniqueArtists]=recommender_matrix();
     fanIdx=find(UniqueFans(:,1)==fanId);
-    fanIdx=UniqueFans(fanIdx,2);
     neighborhood = getNeighborhood(fanIdx,k,MS);
     
     artistIdsToRecommend=[;]; %[artistId, ppfc]

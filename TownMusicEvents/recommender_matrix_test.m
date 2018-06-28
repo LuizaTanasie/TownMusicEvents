@@ -1,5 +1,5 @@
 function recommender_matrix_test()
-    M = load('F:\facultate\licenta\ydata250.txt');
+    M = load('F:\facultate\licenta\ydata300.txt');
     Fans = M(:,1);
     UniqueFans = [unique(Fans),[1:length(unique(Fans))]']; %[fanId, index]
     for i=1:length(Fans)
@@ -23,17 +23,19 @@ function recommender_matrix_test()
     MSoriginal = MS;
     MS(selectedIdx(:,1),selectedIdx(:,2))=0; %replace test data with 0
     barData=[;];
+    epsilon=0;
     for i=1:length(UniqueFans)
-        neighborhood = getRecommendations_test(i,100,MS); %get neighbrhood for fan
         [l,m]=find(selectedIdx(:,1)==i); %find if fan is in selected indexes
         if (~isempty(l))
+            neighborhood=getNeighborhood(i,70,MS);
             for j=1:length(l)
                 ppfc=PPFC(selectedIdx(l(j),1),selectedIdx(l(j),2),neighborhood,MS);
                 barData = [barData; [MSoriginal(selectedIdx(l(j),1),selectedIdx(l(j),2)),ppfc]];
+                epsilon = epsilon+abs(MSoriginal(selectedIdx(l(j),1),selectedIdx(l(j),2))-ppfc);
             end
         end  
-        end
-       
-   % barData= unique(barData,'rows');
+    end
+    epsilon=epsilon/length(selectedIdx);
     bar(barData)
+    disp(epsilon)
   

@@ -12,6 +12,7 @@ namespace Recommender
     {
         static void Main(string[] args)
         {
+            GenresInit.InitializeGenresInDB();
             /*
             FileOperations.SaveGenreDataToFile();
             using (var unitOfWork = new UnitOfWork())
