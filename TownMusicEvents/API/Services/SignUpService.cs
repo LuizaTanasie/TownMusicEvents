@@ -75,6 +75,10 @@ namespace API.Services
 
         public void PostQuizAnswers(int fanId, List<ArtistLastFmModel> ratings, List<GenreModelForSelector> genres)
         {
+            if (genres==null || genres.Count == 0)
+            {
+                throw new InvalidModelException("Va rugam selectati cel putin un gen muzical.");
+            }
             using (var unitOfWork = new UnitOfWork())
             {
                 var userRepository = unitOfWork.GetRepository<User>();

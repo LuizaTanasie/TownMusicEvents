@@ -73,9 +73,15 @@ namespace API.Controllers
 
             List<ArtistLastFmModel> ratings = answers.ratings.ToObject<List<ArtistLastFmModel>>();
             List<GenreModelForSelector> genres = answers.genres.ToObject<List<GenreModelForSelector>>();
-
-            var signUpService = new SignUpService();
-            signUpService.PostQuizAnswers(fanId, ratings, genres);
+            try
+            {
+                var signUpService = new SignUpService();
+                signUpService.PostQuizAnswers(fanId, ratings, genres);
+            }
+            catch (InvalidModelException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok(new { code = "200", message = "Quiz successful" });
            
         }

@@ -212,6 +212,7 @@
     <Compile Include="Models\AstistWithRatingModel.cs" />
     <Compile Include="Models\GenreModelForSelector.cs" />
     <Compile Include="Models\RatingModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\VisitArtistModel.cs" />
     <Compile Include="Models\VisitModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

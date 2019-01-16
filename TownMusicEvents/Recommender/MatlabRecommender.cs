@@ -11,14 +11,24 @@ using TownMusicEvents;
 
 namespace Recommender
 {
-    public static class MatlabRecommender
+    public class MatlabRecommender
     {
+        private MLApp.MLApp matlab;
 
-        public static List<RecommendedArtist> GetRecommendationsOnRatings(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
+        public MatlabRecommender()
+        {
+            matlab = new MLApp.MLApp();
+            matlab.Execute(@"cd C:\Users\Luiza");
+        }
+
+        public List<RecommendedArtist> GetRecommendationsOnRatings(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
         {
             List<Artist> recommendedArtists = new List<Artist>();
-            MLApp.MLApp matlab = new MLApp.MLApp();
-            matlab.Execute(@"cd C:\Users\Luiza");
+            List<RecommendedArtist> recommendations = new List<RecommendedArtist>();
+            if (fan.Ratings.Count == 0)
+            {
+                return recommendations;
+            }
             object result = null;
 
             // Call the MATLAB function myfunc
@@ -28,8 +38,7 @@ namespace Recommender
             object[] res = result as object[];
             object arr = res[0];
 
-            double[,] pairs = (double[,])arr;
-            List<RecommendedArtist> recommendations = new List<RecommendedArtist>();           
+            double[,] pairs = (double[,])arr;      
 
             for (int i = 0; i < pairs.Length/2; i++)
             {
@@ -50,7 +59,7 @@ namespace Recommender
             return recommendations.Take(noOfRecommendations).ToList();
         }
 
-        public static List<RecommendedArtist> GetRecommendations(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
+        public List<RecommendedArtist> GetRecommendations(Fan fan, List<Artist> artists, int neighborhoodSize, int noOfRecommendations)
         {
             List<RecommendedArtist> recommendedArtists = new List<RecommendedArtist>();
             var byRating = GetRecommendationsOnRatings(fan, artists, neighborhoodSize, noOfRecommendations);
@@ -88,8 +97,14 @@ namespace Recommender
             return recommendedArtists;
         }
 
-        public static List<RecommendedArtist> GetRecommendationsOnGenre(User fan, List<Artist> artists, int noOfRecommendations)
+        public List<RecommendedArtist> GetRecommendationsOnGenre(User fan, List<Artist> artists, int noOfRecommendations)
         {
+            List<Artist> recommendedArtists = new List<Artist>();
+            List<RecommendedArtist> recommendations = new List<RecommendedArtist>();
+            if (fan.Genres.Count == 0)
+            {
+                return recommendations;
+            }
             String genresTxt = "";
 
             using (var unitOfWork = new UnitOfWork())
@@ -107,7 +122,7 @@ namespace Recommender
                     }
                 }
             }
-            List<Artist> recommendedArtists = new List<Artist>();
+
             MLApp.MLApp matlab = new MLApp.MLApp();
             matlab.Execute(@"cd C:\Users\Luiza");
             object result = null;
@@ -120,7 +135,6 @@ namespace Recommender
             object arr = res[0];
 
             double[,] pairs = (double[,])arr;
-            List<RecommendedArtist> recommendations = new List<RecommendedArtist>(); 
             for (int i = 0; i < pairs.Length/2; i++)
             {
                 var artist = artists.Where(a => a.User.Role == (int)RolesEnum.ARTIST && a.ArtistId == pairs[i,0]).FirstOrDefault();

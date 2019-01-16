@@ -19,7 +19,8 @@ namespace API.Services
                 var artistRepository = unitOfWork.GetRepository<Artist>();
                 var fanRepository = unitOfWork.GetRepository<Fan>();
                 Fan foundFan = fanRepository.Find(fanId);
-                var results = MatlabRecommender.GetRecommendations(foundFan, artistRepository.GetAll().ToList(), 4, 3);
+                MatlabRecommender mr = new MatlabRecommender();
+                var results = mr.GetRecommendations(foundFan, artistRepository.GetAll().ToList(), 4, 3);
                 return results;
             }
         }
