@@ -52,15 +52,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Artist.cs" />
+    <Compile Include="RecommendedArtist.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
+    <Compile Include="Enums\WhenEnum.cs" />
     <Compile Include="Fan.cs" />
     <Compile Include="Genre.cs" />
     <Compile Include="Idable.cs" />
-    <Compile Include="NewsItem.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rating.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="Visit.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TownMusicEvents;
 
 namespace Recommender
 {
@@ -10,8 +12,16 @@ namespace Recommender
     {
         static void Main(string[] args)
         {
-            GenresInit genresInit = new GenresInit();
-            //genresInit.InitializeGenresInDB();
+            GenresInit.InitializeGenresInDB();
+            /*
+            FileOperations.SaveGenreDataToFile();
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var genresRepository = unitOfWork.GetRepository<User>();
+                User f = genresRepository.Find(57);
+                MatlabRecommender.GetRecommendationsOnGenre(f);
+                //genresInit.InitializeGenresInDB();
+            }*/
         }
     }
 }

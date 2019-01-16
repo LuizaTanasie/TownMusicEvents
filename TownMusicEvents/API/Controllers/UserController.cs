@@ -12,8 +12,6 @@ namespace API.Controllers
     public class UserController : ApiController
     {
 
-
-
         public IHttpActionResult PutNewPassword(int idUser, string oldPassword, string newPassword)
         {
             var headers = Request.Headers;
@@ -45,6 +43,29 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        public IHttpActionResult Get(int id)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new UserService();
+            var user = service.Get(id);
+            if (user == null)
+                return NotFound();
+            return Ok(user);
         }
 
     }

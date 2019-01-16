@@ -13,8 +13,7 @@ namespace Domain
         public virtual Fan Fan { get; set; }
         public virtual Artist Artist { get; set; }
         public int Score { get; set; }
-        public bool HasVisited { get; set; }
-        public bool HasClickedLinks { get; set; }
+        public DateTime Date { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -30,8 +29,6 @@ namespace Domain
             hashCode = hashCode * -1521134295 + EqualityComparer<Fan>.Default.GetHashCode(Fan);
             hashCode = hashCode * -1521134295 + EqualityComparer<Artist>.Default.GetHashCode(Artist);
             hashCode = hashCode * -1521134295 + Score.GetHashCode();
-            hashCode = hashCode * -1521134295 + HasVisited.GetHashCode();
-            hashCode = hashCode * -1521134295 + HasClickedLinks.GetHashCode();
             return hashCode;
         }
     }

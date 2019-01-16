@@ -9,9 +9,9 @@ using TownMusicEvents;
 
 namespace Recommender
 {
-    public class GenresInit
+    public static  class GenresInit
     {
-        public void InitializeGenresInDB()
+        public static void InitializeGenresInDB()
         {
             using (var unitOfWork = new UnitOfWork())
             {

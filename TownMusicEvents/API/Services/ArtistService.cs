@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using Domain;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace API.Services
             using (var unitOfWork = new UnitOfWork())
             {
                 var artistRepository = unitOfWork.GetRepository<Artist>();
-                foreach (var artist in artistRepository.GetAll())
+                foreach (var artist in artistRepository.GetAll().Where(a=>a.LastFmId==null))
                 {
                     artistModels.Add(new ArtistModel { ArtistId = artist.ArtistId,
                      Biography=artist.Biography, Facebook=artist.Facebook, Instagram=artist.Instagram, Name=artist.User.Name,
@@ -24,6 +25,52 @@ namespace API.Services
                 }
                 return artistModels;
             }
+        }
+
+        public List<ArtistModel> SearchForArtist(string artistName)
+        {
+            var artistModels = new List<ArtistModel>();
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var artistRepository = unitOfWork.GetRepository<Artist>();
+                foreach (var artist in artistRepository.GetAll()
+                    .Where(a => a.LastFmId == null && a.User.Name.ToLower().StartsWith(artistName.ToLower())))
+                {
+                    artistModels.Add(new ArtistModel
+                    {
+                        ArtistId = artist.ArtistId,
+                        Name = artist.User.Name,
+                        PictureUrl = artist.PictureUrl
+                    });
+                }
+                return artistModels;
+            }
+        }
+
+        public List<AstistWithRatingModel> GetRatedArtistsByAFan(int fanId)
+        {
+            var artistModels = new List<AstistWithRatingModel>();
+            using (var unitOfWork = new UnitOfWork())
+            {
+                var fanRepository = unitOfWork.GetRepository<Fan>();
+                var artistRepository = unitOfWork.GetRepository<Artist>();
+                var fan = fanRepository.Find(fanId);
+                foreach (var rating in fan.Ratings)
+                {
+                    Artist artist = artistRepository.Find(rating.ArtistId);
+                    if (artist.User.Role != (int)RolesEnum.LASTFMARTIST)
+                    {
+                        artistModels.Add(new AstistWithRatingModel
+                        {
+                            ArtistId = artist.ArtistId,
+                            Name = artist.User.Name,
+                            Score = rating.Score,
+                            PictureUrl = artist.PictureUrl
+                        });
+                    }
+                }
+            }
+            return artistModels;
         }
 
         public ArtistModel GetArtist(int id)
@@ -47,7 +94,9 @@ namespace API.Services
                     PictureUrl = artist.PictureUrl,
                     Twitter = artist.Twitter,
                     Website = artist.Website,
-                    YouTube = artist.YouTube
+                    YouTube = artist.YouTube,
+                    SoundCloud = artist.SoundCloud,
+                    Spotify = artist.Spotify
                 };
 
             }
@@ -97,6 +146,14 @@ namespace API.Services
                 if (updatedArtist.YouTube != "")
                 {
                     artist.YouTube = updatedArtist.YouTube;
+                }
+                if (updatedArtist.Spotify != "")
+                {
+                    artist.Spotify = updatedArtist.Spotify;
+                }
+                if (updatedArtist.SoundCloud != "")
+                {
+                    artist.SoundCloud = updatedArtist.SoundCloud;
                 }
                 userRepository.Update(user);
                 artistRepository.Update(artist);

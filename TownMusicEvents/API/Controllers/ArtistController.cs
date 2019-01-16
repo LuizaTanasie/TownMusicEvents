@@ -30,7 +30,55 @@ namespace API.Controllers
                 }
             }
             var service = new ArtistService();
-            var artists = service.GetAllArtists();
+            var rnd = new Random();
+            var artists = service.GetAllArtists().OrderBy(item => rnd.Next()).ToList();
+            if (artists.Count == 0)
+                return NotFound();
+            return Ok(artists);
+        }
+
+        [Route("api/artist/search")]
+        public IHttpActionResult GetSearchResults(string artistName)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new ArtistService();
+            var artists = service.SearchForArtist(artistName);
+            if (artists.Count == 0)
+                return NotFound();
+            return Ok(artists);
+        }
+
+        public IHttpActionResult GetRatedArtistsByAFan(int fanId)
+        {
+            var headers = Request.Headers;
+            if (!headers.Contains("token"))
+            {
+                return Ok(new { errorCode = "66", message = "unauthorized" });
+            }
+            if (headers.Contains("token"))
+            {
+                var token = headers.GetValues("token").First();
+                var jwt = new JwtToken();
+                if (!jwt.VerifyToken(token))
+                {
+                    return Ok(new { errorCode = "66", message = "unauthorized" });
+                }
+            }
+            var service = new ArtistService();
+            var artists = service.GetRatedArtistsByAFan(fanId);
             if (artists.Count == 0)
                 return NotFound();
             return Ok(artists);

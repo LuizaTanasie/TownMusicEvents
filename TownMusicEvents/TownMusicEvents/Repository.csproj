@@ -63,6 +63,26 @@
     <Compile Include="Migrations\201804101033064_lastfm.Designer.cs">
       <DependentUpon>201804101033064_lastfm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804301131177_visit.cs" />
+    <Compile Include="Migrations\201804301131177_visit.Designer.cs">
+      <DependentUpon>201804301131177_visit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805011658444_uppercase.cs" />
+    <Compile Include="Migrations\201805011658444_uppercase.Designer.cs">
+      <DependentUpon>201805011658444_uppercase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805141509503_recommender.cs" />
+    <Compile Include="Migrations\201805141509503_recommender.Designer.cs">
+      <DependentUpon>201805141509503_recommender.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806051908098_delete-reco.cs" />
+    <Compile Include="Migrations\201806051908098_delete-reco.Designer.cs">
+      <DependentUpon>201806051908098_delete-reco.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806051928418_delete-news.cs" />
+    <Compile Include="Migrations\201806051928418_delete-news.Designer.cs">
+      <DependentUpon>201806051928418_delete-news.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +108,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804101033064_lastfm.resx">
       <DependentUpon>201804101033064_lastfm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804301131177_visit.resx">
+      <DependentUpon>201804301131177_visit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805011658444_uppercase.resx">
+      <DependentUpon>201805011658444_uppercase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805141509503_recommender.resx">
+      <DependentUpon>201805141509503_recommender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806051908098_delete-reco.resx">
+      <DependentUpon>201806051908098_delete-reco.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806051928418_delete-news.resx">
+      <DependentUpon>201806051928418_delete-news.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
